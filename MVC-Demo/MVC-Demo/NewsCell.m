@@ -10,6 +10,8 @@
 #import "UIView+Extension.h"
 #import "NewsModel.h"
 #import "NewsActionView.h"
+#import "UIImageView+WebCache.h"
+#import "Masonry/Masonry.h"
 
 @interface NewsCell()
 /** icon */
@@ -38,6 +40,8 @@
 
 @implementation NewsCell
 
+#define kImgViewWH (kScreenWidth - 20 - 15) / 4.0
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -52,21 +56,31 @@
 - (void)drawUI {
     self.contentView.width = kScreenWidth;
     
-    self.iconImgView.x = 10;
-    self.iconImgView.y = 10;
     [self.contentView addSubview:self.iconImgView];
-    
-    self.titleLbe.x = self.iconImgView.right + 10;
-    self.titleLbe.bottom = self.iconImgView.centerY - 2;
     [self.contentView addSubview:self.titleLbe];
-    
-    self.subTitleLbe.x = self.titleLbe.x;
-    self.subTitleLbe.y = self.iconImgView.centerY + 2;
     [self.contentView addSubview:self.subTitleLbe];
-    
-    self.deleteImgView.right = self.contentView.width - 10;
-    self.deleteImgView.centerY = self.iconImgView.centerY;
     [self.contentView addSubview:self.deleteImgView];
+    
+    [self.iconImgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(44, 44));
+        make.top.equalTo(self.contentView.mas_top).offset(10);
+        make.leading.equalTo(self.contentView.mas_leading).offset(10);
+    }];
+
+    [self.titleLbe mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(self.iconImgView.mas_trailing).offset(10);
+        make.bottom.equalTo(self.iconImgView.mas_centerY).offset(-2);
+    }];
+    
+    [self.subTitleLbe mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(self.titleLbe.mas_leading);
+        make.top.equalTo(self.iconImgView.mas_centerY).offset(2);
+    }];
+    
+    [self.deleteImgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(self.contentView.mas_trailing).offset(-10);
+        make.centerY.equalTo(self.iconImgView.mas_centerY);
+    }];
     
     self.attentionLbe.right = self.deleteImgView.x - 20;
     self.attentionLbe.centerY = self.iconImgView.centerY;
@@ -76,7 +90,10 @@
     self.contentLbe.x = 10;
     [self.contentView addSubview:self.contentLbe];
     
-    self.discussActionView.y = self.contentLbe.bottom + 10;
+    self.imgListView.y = self.contentLbe.bottom + 10;
+    [self.contentView addSubview:self.imgListView];
+    
+    self.discussActionView.y = self.imgListView.bottom + 10;
     self.discussActionView.centerX = self.contentView.width * 0.5;
     [self.contentView addSubview:self.discussActionView];
     
@@ -90,13 +107,55 @@
     
     self.divideLineView.y = self.discussActionView.bottom;
     [self.contentView addSubview:self.divideLineView];
+    
+    self.contentView.height = self.divideLineView.bottom;
 }
 
 #pragma mark - set
 
 - (void)setModel:(NewsModel *)model {
     _model = model;
-    self.iconImgView.image = [UIImage imageNamed:<#(nonnull NSString *)#>]
+    [self.iconImgView sd_setImageWithURL:[NSURL URLWithString:model.icon]];
+    
+    self.titleLbe.text = model.title;
+    [self.titleLbe sizeToFit];
+    
+    self.subTitleLbe.text = model.subTitle;
+    [self.subTitleLbe sizeToFit];
+    
+    self.contentLbe.text = model.content;
+    [self.contentLbe sizeToFit];
+    
+    [self.imgListView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    self.imgListView.y = self.contentLbe.bottom + 10;
+    self.imgListView.height = 0;
+    float posY = self.imgListView.bottom;
+    
+    if (model.imgs.count > 0) {
+        __block float posX = 0;
+        [model.imgs enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(posX, 0, kImgViewWH, kImgViewWH)];
+            [imgView sd_setImageWithURL:[NSURL URLWithString:obj]];
+            [self.imgListView addSubview:imgView];
+            posX += (5 + kImgViewWH);
+            if (idx >= 3) {
+                *stop = YES;
+            }
+        }];
+        self.imgListView.height = kImgViewWH;
+        posY = self.imgListView.bottom;
+    }
+    
+    self.discussActionView.y = posY;
+    [self.discussActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.discussNum]];
+    
+    self.shareActionView.y = self.discussActionView.y;
+    [self.shareActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.shareNum]];
+    
+    self.likeActionView.y = self.discussActionView.y;
+    [self.likeActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.likeNum]];
+    
+    self.divideLineView.y = self.discussActionView.bottom;
 }
 
 #pragma mark - action
@@ -170,7 +229,7 @@
 
 - (UIView *)imgListView {
     if (_imgListView == nil) {
-        _imgListView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth - 20, 0)];
+        _imgListView = [[UIView alloc] initWithFrame:CGRectMake(10, 0, kScreenWidth - 20, 0)];
     }
     return _imgListView;
 }

@@ -21,13 +21,13 @@ NS_ASSUME_NONNULL_BEGIN
 /** content */
 @property(nonatomic, copy)NSString *content;
 /** imgList */
-@property(nonatomic, copy)NSArray *imgList;
+@property(nonatomic, copy)NSArray *imgs;
 /** share number */
-@property(nonatomic, copy)NSString *shareNum;
+@property(nonatomic, assign)NSUInteger shareNum;
 /** discuss num */
-@property(nonatomic, copy)NSString *discussNum;
+@property(nonatomic, assign)NSUInteger discussNum;
 /** like */
-@property(nonatomic, copy)NSString *likeNum;
+@property(nonatomic, assign)NSUInteger likeNum;
 
 @end
 
