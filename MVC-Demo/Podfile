@@ -1,0 +1,12 @@
+platform :ios, '9.0'
+
+#use_frameworks!
+inhibit_all_warnings!
+
+target 'MVC-Demo' do
+
+pod 'SDWebImage'
+pod 'SDWebImage/GIF'
+pod 'SDWebImage/WebP'
+
+end
