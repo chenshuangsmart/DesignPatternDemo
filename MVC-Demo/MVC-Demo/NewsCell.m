@@ -197,11 +197,33 @@
 #pragma mark - action
 
 - (void)tapAttentionLbe {
-    
+    if ([self.delegate respondsToSelector:@selector(didTapNewsCellAttention:)]) {
+        [self.delegate didTapNewsCellAttention:self.model];
+    }
 }
 
 - (void)tapDelete {
-    
+    if ([self.delegate respondsToSelector:@selector(didTapNewsCellDelete:)]) {
+        [self.delegate didTapNewsCellDelete:self.model];
+    }
+}
+
+- (void)tapShare {
+    if ([self.delegate respondsToSelector:@selector(didTapNewsCellShare:)]) {
+        [self.delegate didTapNewsCellShare:self.model];
+    }
+}
+
+- (void)tapDiscuss {
+    if ([self.delegate respondsToSelector:@selector(didTapNewsCellDiscuss:)]) {
+        [self.delegate didTapNewsCellDiscuss:self.model];
+    }
+}
+
+- (void)tapLike {
+    if ([self.delegate respondsToSelector:@selector(didTapNewsCellLike:)]) {
+        [self.delegate didTapNewsCellLike:self.model];
+    }
 }
 
 #pragma mark - private
@@ -277,6 +299,7 @@
 - (NewsActionView *)shareActionView {
     if (_shareActionView == nil) {
         _shareActionView = [[NewsActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth * 0.33, 44) imgName:@"share" title:@"转发"];
+        [_shareActionView onTap:self action:@selector(tapShare)];
     }
     return _shareActionView;
 }
@@ -284,6 +307,7 @@
 - (NewsActionView *)discussActionView {
     if (_discussActionView == nil) {
         _discussActionView = [[NewsActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth * 0.34, 44) imgName:@"message" title:@"0"];
+        [_discussActionView onTap:self action:@selector(tapDiscuss)];
     }
     return _discussActionView;
 }
@@ -291,6 +315,7 @@
 - (NewsActionView *)likeActionView {
     if (_likeActionView == nil) {
         _likeActionView = [[NewsActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth * 0.33, 44) imgName:@"like" title:@"0"];
+        [_likeActionView onTap:self action:@selector(tapLike)];
     }
     return _likeActionView;
 }

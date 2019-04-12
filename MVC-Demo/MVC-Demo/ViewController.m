@@ -13,11 +13,12 @@
 #import "Masonry/Masonry.h"
 #import "SVPullToRefresh.h"
 #import "FPSHandler.h"
+#import "AlertUtils.h"
 
 /**
  关于 MVC 演示的 Demo
  */
-@interface ViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface ViewController ()<UITableViewDataSource, UITableViewDelegate, NewsCellDelegate>
 /** tableView */
 @property(nonatomic, strong)UITableView *tableView;
 /** dataSource */
@@ -137,10 +138,49 @@ static NSString *cellId = @"NewsCellId";
     NewsCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.model = model;
+    cell.delegate = self;   // VC作为Cell视图的代理对象
     return cell;
 }
 
-#pragma mark - UITableViewDelegate
+#pragma mark - NewsCellDelegate
+
+- (void)didTapNewsCellDelete:(NewsModel *)newsModel {
+    [self.dataSource removeObject:newsModel];
+    [self.tableView reloadData];
+    
+    [AlertUtils message:[NSString stringWithFormat:@"以后我们将减少 %@ 类推荐",newsModel.title]];
+}
+
+- (void)didTapNewsCellAttention:(NewsModel *)newsModel {
+    
+}
+
+- (void)didTapNewsCellShare:(NewsModel *)newsModel {
+    [self alertMessage:newsModel preferredStyle:UIAlertControllerStyleActionSheet];
+}
+
+- (void)didTapNewsCellDiscuss:(NewsModel *)newsModel {
+    [self alertMessage:newsModel preferredStyle:UIAlertControllerStyleActionSheet];
+}
+
+- (void)didTapNewsCellLike:(NewsModel *)newsModel {
+    
+}
+
+#pragma mark - alert
+
+- (void)alertMessage:(NewsModel *)newsModel preferredStyle:(UIAlertControllerStyle)preferredStyle {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@\n%@",newsModel.title,newsModel.subTitle] message:newsModel.content preferredStyle:preferredStyle];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        
+    }];
+    [alertVC addAction:okAction];
+    [alertVC addAction:cancelAction];
+    [self presentViewController:alertVC animated:YES completion:nil];
+}
 
 #pragma mark - lazy
 

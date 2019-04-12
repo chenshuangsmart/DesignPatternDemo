@@ -15,10 +15,32 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol NewsCellDelegate <NSObject>
+
+// tap delete
+- (void)didTapNewsCellDelete:(NewsModel *)newsModel;
+
+// tap attention
+- (void)didTapNewsCellAttention:(NewsModel *)newsModel;
+
+// tap share
+- (void)didTapNewsCellShare:(NewsModel *)newsModel;
+
+// tap discuss
+- (void)didTapNewsCellDiscuss:(NewsModel *)newsModel;
+
+// tap like
+- (void)didTapNewsCellLike:(NewsModel *)newsModel;
+
+@end
+
 @interface NewsCell : UITableViewCell
 
 /** model */
 @property(nonatomic, strong)NewsModel *model;
+
+/** delegate */
+@property(nonatomic,weak)id<NewsCellDelegate> delegate;
 
 @end
 
