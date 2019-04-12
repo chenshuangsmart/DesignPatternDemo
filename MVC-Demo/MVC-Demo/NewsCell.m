@@ -54,12 +54,17 @@
 #pragma mark - drawUI
 
 - (void)drawUI {
-    self.contentView.width = kScreenWidth;
-    
     [self.contentView addSubview:self.iconImgView];
     [self.contentView addSubview:self.titleLbe];
     [self.contentView addSubview:self.subTitleLbe];
     [self.contentView addSubview:self.deleteImgView];
+    [self.contentView addSubview:self.attentionLbe];
+    [self.contentView addSubview:self.contentLbe];
+    [self.contentView addSubview:self.imgListView];
+    [self.contentView addSubview:self.discussActionView];
+    [self.contentView addSubview:self.shareActionView];
+    [self.contentView addSubview:self.likeActionView];
+    [self.contentView addSubview:self.divideLineView];
     
     [self.iconImgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(CGSizeMake(44, 44));
@@ -82,33 +87,49 @@
         make.centerY.equalTo(self.iconImgView.mas_centerY);
     }];
     
-    self.attentionLbe.right = self.deleteImgView.x - 20;
-    self.attentionLbe.centerY = self.iconImgView.centerY;
-    [self.contentView addSubview:self.attentionLbe];
+    [self.attentionLbe mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(self.deleteImgView.mas_leading).offset(-20);
+        make.centerY.equalTo(self.iconImgView.mas_centerY);
+    }];
     
-    self.contentLbe.y = self.iconImgView.bottom + 10;
-    self.contentLbe.x = 10;
-    [self.contentView addSubview:self.contentLbe];
+    [self.contentLbe mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(self.contentView.mas_leading).offset(10);
+        make.trailing.equalTo(self.contentView.mas_trailing).offset(-10);
+        make.top.equalTo(self.iconImgView.mas_bottom).offset(10);
+    }];
     
-    self.imgListView.y = self.contentLbe.bottom + 10;
-    [self.contentView addSubview:self.imgListView];
+    [self.imgListView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(self.contentView.mas_leading).offset(10);
+        make.trailing.equalTo(self.contentView.mas_trailing).offset(-10);
+        make.top.equalTo(self.contentLbe.mas_bottom).offset(10);
+        make.height.mas_equalTo(0);
+    }];
     
-    self.discussActionView.y = self.imgListView.bottom + 10;
-    self.discussActionView.centerX = self.contentView.width * 0.5;
-    [self.contentView addSubview:self.discussActionView];
+    [self.discussActionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.imgListView.mas_bottom).offset(10);
+        make.size.mas_equalTo(self.discussActionView.size);
+        make.centerX.mas_equalTo(self.contentView.mas_centerX);
+    }];
     
-    self.shareActionView.right = self.discussActionView.x;
-    self.shareActionView.centerY = self.discussActionView.centerY;
-    [self.contentView addSubview:self.shareActionView];
+    [self.shareActionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.discussActionView.mas_top);
+        make.size.mas_equalTo(self.shareActionView.size);
+        make.trailing.equalTo(self.discussActionView.mas_leading);
+    }];
     
-    self.likeActionView.x = self.discussActionView.right;
-    self.likeActionView.centerY = self.discussActionView.centerY;
-    [self.contentView addSubview:self.likeActionView];
+    [self.likeActionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.discussActionView.mas_top);
+        make.size.mas_equalTo(self.likeActionView.size);
+        make.leading.equalTo(self.discussActionView.mas_trailing);
+    }];
     
-    self.divideLineView.y = self.discussActionView.bottom;
-    [self.contentView addSubview:self.divideLineView];
-    
-    self.contentView.height = self.divideLineView.bottom;
+    [self.divideLineView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.trailing.equalTo(self.contentView);
+        make.height.mas_equalTo(5);
+        make.top.equalTo(self.discussActionView.mas_bottom);
+        //===== 底部对齐是撑开cell的关键点 =====//
+        make.bottom.mas_equalTo(self.contentView);
+    }];
 }
 
 #pragma mark - set
@@ -127,9 +148,7 @@
     [self.contentLbe sizeToFit];
     
     [self.imgListView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    self.imgListView.y = self.contentLbe.bottom + 10;
-    self.imgListView.height = 0;
-    float posY = self.imgListView.bottom;
+    float imgListViewHeight = 0;
     
     if (model.imgs.count > 0) {
         __block float posX = 0;
@@ -142,20 +161,33 @@
                 *stop = YES;
             }
         }];
-        self.imgListView.height = kImgViewWH;
-        posY = self.imgListView.bottom;
+        imgListViewHeight = kImgViewWH;
     }
     
-    self.discussActionView.y = posY;
+    [self.imgListView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(imgListViewHeight);
+    }];
+    
+    [self.discussActionView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.imgListView.mas_bottom).offset(10);
+    }];
+    
+    [self.shareActionView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.discussActionView.mas_top);
+    }];
+    
+    [self.likeActionView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.discussActionView.mas_top);
+    }];
+    
     [self.discussActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.discussNum]];
-    
-    self.shareActionView.y = self.discussActionView.y;
     [self.shareActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.shareNum]];
-    
-    self.likeActionView.y = self.discussActionView.y;
     [self.likeActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.likeNum]];
     
-    self.divideLineView.y = self.discussActionView.bottom;
+    [self.divideLineView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.discussActionView.mas_bottom);
+        make.bottom.mas_equalTo(self.contentView);
+    }];
 }
 
 #pragma mark - action
@@ -204,6 +236,8 @@
 - (UILabel *)attentionLbe {
     if (_attentionLbe == nil) {
         _attentionLbe = [self getLbeWithFont:16 textColor:[UIColor redColor]];
+        _attentionLbe.text = @"关注";
+        [_attentionLbe sizeToFit];
         [_attentionLbe onTap:self action:@selector(tapAttentionLbe)];
     }
     return _attentionLbe;
@@ -235,21 +269,21 @@
 }
 
 - (NewsActionView *)shareActionView {
-    if (_shareActionView) {
+    if (_shareActionView == nil) {
         _shareActionView = [[NewsActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth * 0.33, 44) imgName:@"share" title:@"转发"];
     }
     return _shareActionView;
 }
 
 - (NewsActionView *)discussActionView {
-    if (_discussActionView) {
+    if (_discussActionView == nil) {
         _discussActionView = [[NewsActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth * 0.34, 44) imgName:@"message" title:@"0"];
     }
     return _discussActionView;
 }
 
 - (NewsActionView *)likeActionView {
-    if (_likeActionView) {
+    if (_likeActionView == nil) {
         _likeActionView = [[NewsActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth * 0.33, 44) imgName:@"like" title:@"0"];
     }
     return _likeActionView;
@@ -258,7 +292,7 @@
 - (UIView *)divideLineView {
     if (_divideLineView == nil) {
         _divideLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 5)];
-        _divideLineView.backgroundColor = [UIColor grayColor];
+        _divideLineView.backgroundColor = [UIColor colorWithRed:245 / 255.0 green:245/255.0 blue:245/255.0 alpha:1];
     }
     return _divideLineView;
 }

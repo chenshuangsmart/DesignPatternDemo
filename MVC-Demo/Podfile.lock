@@ -24,6 +24,7 @@ PODS:
   - libwebp/utils (1.0.2):
     - libwebp/core
   - libwebp/webp (1.0.2)
+  - Masonry (1.1.0)
   - SDWebImage (4.4.6):
     - SDWebImage/Core (= 4.4.6)
   - SDWebImage/Core (4.4.6)
@@ -35,6 +36,7 @@ PODS:
     - SDWebImage/Core
 
 DEPENDENCIES:
+  - Masonry
   - SDWebImage
   - SDWebImage/GIF
   - SDWebImage/WebP
@@ -43,13 +45,15 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - FLAnimatedImage
     - libwebp
+    - Masonry
     - SDWebImage
 
 SPEC CHECKSUMS:
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   libwebp: b068a3bd7c45f7460f6715be7bed1a18fd5d6b48
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   SDWebImage: 3f3f0c02f09798048c47a5ed0a13f17b063572d8
 
-PODFILE CHECKSUM: 9a75557494e85b5572cd9f38ac3a1522185946ae
+PODFILE CHECKSUM: 73816b22b243784231de8131884e1b6bc0d0e385
 
 COCOAPODS: 1.6.1

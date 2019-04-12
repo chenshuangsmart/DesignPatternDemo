@@ -8,6 +8,7 @@
 
 #import "NewsActionView.h"
 #import "UIView+Extension.h"
+#import "Masonry/Masonry.h"
 
 @interface NewsActionView()
 /** img */
@@ -24,6 +25,8 @@
 - (instancetype)initWithFrame:(CGRect)frame imgName:(NSString *)imgName title:(NSString *)title {
     self = [super initWithFrame:frame];
     if (self) {
+        _imgName = imgName;
+        _title = title;
         [self drawUI];
     }
     return self;
@@ -42,11 +45,15 @@
     [self addSubview:lbe];
     self.titleLbe = lbe;
     
-    imgView.centerY = self.height * 0.5;
-    imgView.x = (self.width - imgView.width - 10 - lbe.width) * 0.5;
+    [imgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.mas_centerY);
+        make.trailing.equalTo(self.mas_centerX).offset(-2);
+    }];
     
-    lbe.x = imgView.right + 10;
-    lbe.centerY = self.height * 0.5;
+    [lbe mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.mas_centerY);
+        make.leading.equalTo(self.mas_centerX).offset(+2);
+    }];
 }
 
 - (void)updateTitle:(NSString *)tilte {
@@ -54,8 +61,10 @@
     self.titleLbe.text = tilte;
     [self.titleLbe sizeToFit];
     
-    self.imgView.x = (self.width - self.imgView.width - 10 - self.titleLbe.width) * 0.5;
-    self.titleLbe.x = self.imgView.right + 10;
+    [self.titleLbe mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.mas_centerY);
+        make.leading.equalTo(self.mas_centerX).offset(+2);
+    }];
 }
 
 @end

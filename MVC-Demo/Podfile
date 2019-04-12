@@ -8,5 +8,6 @@ target 'MVC-Demo' do
 pod 'SDWebImage'
 pod 'SDWebImage/GIF'
 pod 'SDWebImage/WebP'
+pod 'Masonry'
 
 end

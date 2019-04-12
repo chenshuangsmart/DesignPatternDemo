@@ -10,6 +10,8 @@
 #import "NewsCell.h"
 #import "NewsModel.h"
 #import "UIView+Extension.h"
+#import "Masonry/Masonry.h"
+#import "SVPullToRefresh.h"
 
 /**
  关于 MVC 演示的 Demo
@@ -29,6 +31,8 @@
 @property(nonatomic,strong)NSMutableArray *titles;
 /** sub title*/
 @property(nonatomic,strong)NSMutableArray *subTitles;
+/** header view */
+@property(nonatomic, strong)UIView *headerView;
 @end
 
 static NSString *cellId = @"NewsCellId";
@@ -44,6 +48,54 @@ static NSString *cellId = @"NewsCellId";
 }
 
 - (void)setupData {
+    [self.dataSource addObjectsFromArray:[self getRandomData]];
+}
+
+- (void)drawUI {
+    [self.view addSubview:self.headerView];
+    [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.leading.trailing.equalTo(self.view);
+        make.height.mas_equalTo(64);
+    }];
+    
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.headerView.mas_bottom);
+        make.leading.trailing.bottom.equalTo(self.view);
+    }];
+    [self.tableView reloadData];
+}
+
+#pragma mark - loadData
+
+- (void)refreshData {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView.pullToRefreshView stopAnimating];
+        [self.dataSource removeAllObjects];
+        self.dataSource addObjectsFromArray:<#(nonnull NSArray<NewsModel *> *)#>
+    });
+}
+
+- (void)loadNextPage {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView.pullToRefreshView stopAnimating];
+        [self.dataSource addObjectsFromArray:newRows];
+        [self beginUpdates];
+        
+        NSMutableArray *arrayWithIndexPaths = [NSMutableArray array];
+        NSInteger total = [self numberOfRowsInSection:0];
+        for (NSUInteger i = (NSUInteger) total; i < srcDatas.count; i++) {
+            [arrayWithIndexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+        }
+        [self insertRowsAtIndexPaths:arrayWithIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+        [self endUpdates];
+    });
+}
+
+#pragma mark - get
+
+- (NSArray *)getRandomData {
+    NSMutableArray *models = [NSMutableArray array];
     for (int i = 0; i < 20; i++) {
         NewsModel *model = [[NewsModel alloc] init];
         model.icon = [self.icons objectAtIndex:arc4random_uniform(10)];
@@ -61,13 +113,9 @@ static NSString *cellId = @"NewsCellId";
         model.shareNum = arc4random_uniform(100);
         model.discussNum = arc4random_uniform(100);
         model.likeNum = arc4random_uniform(100);
-        [self.dataSource addObject:model];
+        [models addObject:model];
     }
-}
-
-- (void)drawUI {
-    [self.view addSubview:self.tableView];
-    [self.tableView reloadData];
+    return models.copy;
 }
 
 #pragma mark - UITableViewDataSource
@@ -88,11 +136,17 @@ static NSString *cellId = @"NewsCellId";
     return cell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return UITableViewAutomaticDimension;//动态高度
-}
-
 #pragma mark - UITableViewDelegate
+
+#pragma mark - lazy
+
+- (UIView *)headerView {
+    if (_headerView == nil) {
+        _headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 64)];
+        _headerView.backgroundColor = [UIColor whiteColor];
+    }
+    return _headerView;
+}
 
 - (UITableView *)tableView {
     if (_tableView == nil) {
@@ -107,7 +161,13 @@ static NSString *cellId = @"NewsCellId";
         _tableView.estimatedRowHeight = 250;//预估高度
         _tableView.rowHeight = UITableViewAutomaticDimension;
         [_tableView registerClass:[NewsCell class] forCellReuseIdentifier:cellId];
-        _tableView.alpha = 0;
+        __weak typeof(self) weakSelf = self;
+        [_tableView addPullToRefreshWithActionHandler:^{
+            [weakSelf refreshData];
+        }];
+        [_tableView addInfiniteScrollingWithActionHandler:^{
+            [weakSelf loadNextPage];
+        }];
     }
     return _tableView;
 }
