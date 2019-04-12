@@ -149,12 +149,15 @@
     
     [self.imgListView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     float imgListViewHeight = 0;
+    float discussActionViewPosY = 0;
     
     if (model.imgs.count > 0) {
         __block float posX = 0;
         [model.imgs enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
             UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(posX, 0, kImgViewWH, kImgViewWH)];
             [imgView sd_setImageWithURL:[NSURL URLWithString:obj]];
+            imgView.layer.cornerRadius = 2;
+            imgView.layer.masksToBounds = YES;
             [self.imgListView addSubview:imgView];
             posX += (5 + kImgViewWH);
             if (idx >= 3) {
@@ -162,6 +165,7 @@
             }
         }];
         imgListViewHeight = kImgViewWH;
+        discussActionViewPosY = 10;
     }
     
     [self.imgListView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -169,7 +173,7 @@
     }];
     
     [self.discussActionView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.imgListView.mas_bottom).offset(10);
+        make.top.equalTo(self.imgListView.mas_bottom).offset(discussActionViewPosY);
     }];
     
     [self.shareActionView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -215,6 +219,8 @@
 - (UIImageView *)iconImgView {
     if (_iconImgView == nil) {
         _iconImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+        _iconImgView.layer.cornerRadius = 22;
+        _iconImgView.layer.masksToBounds = YES;
     }
     return _iconImgView;
 }

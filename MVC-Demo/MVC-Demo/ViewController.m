@@ -12,6 +12,7 @@
 #import "UIView+Extension.h"
 #import "Masonry/Masonry.h"
 #import "SVPullToRefresh.h"
+#import "FPSHandler.h"
 
 /**
  关于 MVC 演示的 Demo
@@ -71,24 +72,27 @@ static NSString *cellId = @"NewsCellId";
 - (void)refreshData {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.tableView.pullToRefreshView stopAnimating];
+        NSArray *datas = [self getRandomData];
         [self.dataSource removeAllObjects];
-        self.dataSource addObjectsFromArray:<#(nonnull NSArray<NewsModel *> *)#>
+        [self.dataSource addObjectsFromArray:datas];
+        [self.tableView reloadData];
     });
 }
 
 - (void)loadNextPage {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableView.pullToRefreshView stopAnimating];
+        [self.tableView.infiniteScrollingView stopAnimating];
+        NSArray *newRows = [self getRandomData];
         [self.dataSource addObjectsFromArray:newRows];
-        [self beginUpdates];
+        [self.tableView beginUpdates];
         
         NSMutableArray *arrayWithIndexPaths = [NSMutableArray array];
-        NSInteger total = [self numberOfRowsInSection:0];
-        for (NSUInteger i = (NSUInteger) total; i < srcDatas.count; i++) {
+        NSInteger total = [self.tableView numberOfRowsInSection:0];
+        for (NSUInteger i = (NSUInteger) total; i < self.dataSource.count; i++) {
             [arrayWithIndexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
         }
-        [self insertRowsAtIndexPaths:arrayWithIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-        [self endUpdates];
+        [self.tableView insertRowsAtIndexPaths:arrayWithIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView endUpdates];
     });
 }
 
@@ -102,7 +106,7 @@ static NSString *cellId = @"NewsCellId";
         model.title = [self.titles objectAtIndex:arc4random_uniform(10)];
         model.subTitle = [self.subTitles objectAtIndex:arc4random_uniform(10)];
         model.content = [self.contents objectAtIndex:arc4random_uniform(20)];
-        NSUInteger index = arc4random_uniform(4);
+        NSUInteger index = arc4random_uniform(6);
         NSMutableArray *imgs = [NSMutableArray array];
         for (int i = 0; i < index; i++) {
             [imgs addObject:[self.imgs objectAtIndex:arc4random_uniform(20)]];
@@ -144,6 +148,22 @@ static NSString *cellId = @"NewsCellId";
     if (_headerView == nil) {
         _headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 64)];
         _headerView.backgroundColor = [UIColor whiteColor];
+        
+        UILabel *lbe = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+        lbe.font = [UIFont systemFontOfSize:16];
+        lbe.textColor = [UIColor redColor];
+        lbe.textAlignment = NSTextAlignmentCenter;
+        [lbe sizeToFit];
+        [_headerView addSubview:lbe];
+        
+        [lbe mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.mas_equalTo(self.headerView.mas_centerX);
+            make.bottom.equalTo(self.headerView.mas_bottom).offset(-10);
+        }];
+        
+        [[FPSHandler shareInstance] startMonitor:^(float fps) {
+            lbe.text = [NSString stringWithFormat:@"FPS:%0.0f",fps];
+        }];
     }
     return _headerView;
 }
@@ -226,23 +246,23 @@ static NSString *cellId = @"NewsCellId";
 - (NSMutableArray *)contents {
     if (_contents == nil) {
         _contents = [NSMutableArray array];
-        [_contents addObject:@"美国指控阿桑奇犯电脑黑客攻击罪 最高可判五年"];
-        [_contents addObject:@"苏丹国防部长宣布已逮捕总统 该国进入3个月紧急状态"];
+        [_contents addObject:@"美国指控阿桑奇犯电脑黑客攻击罪 最高可判五年\nAI算法能“偷听”：突破伦理的“灰犀牛”并不远"];
+        [_contents addObject:@"苏丹国防部长宣布已逮捕总统 该国进入3个月紧急状态\手机被偷后，女孩成功定位到小偷位置！结果她自己都惊.."];
         [_contents addObject:@"印度大选拉开帷幕：迎接“大考” 莫迪连任胜算几何"];
-        [_contents addObject:@"兵马俑在美被损案审判引争议 美国网友：要重审狠判！"];
-        [_contents addObject:@"金正恩主持朝鲜七届四中全会 27次提“自力更生”"];
+        [_contents addObject:@"兵马俑在美被损案审判引争议 美国网友：要重审狠判！\nROG发布新款电竞机械键盘 Ctrl键亮了\n再见了手机卡，中国全面开通eSIM卡，网友：好处真.."];
+        [_contents addObject:@"金正恩主持朝鲜七届四中全会 27次提“自力更生”\n35所高校新增“人工智能”专业，想报考就得先系统化.."];
         [_contents addObject:@"美想让中国入美俄核裁条约 外交部:已为国际核裁做重要贡献"];
-        [_contents addObject:@"视觉中国官网无法访问 被共青团中央点名后曾道歉"];
+        [_contents addObject:@"视觉中国官网无法访问 被共青团中央点名后曾道歉\n金立已成定局，谁会步入后尘，魅族尤为堪忧"];
         [_contents addObject:@"肉价连降25个月后首涨,仔猪价逼近千元,猪又要“起飞”了？"];
-        [_contents addObject:@"故宫新院长啥来头？出身甘肃农村，误入千佛深处"];
+        [_contents addObject:@"故宫新院长啥来头？出身甘肃农村，误入千佛深处\n谷歌助手迎来更新 Android用户的福利来了"];
         [_contents addObject:@"“996”太累了！广州发文鼓励弹性作息，一周休2.5天可能吗"];
         [_contents addObject:@"赵薇涉诉案件达512起！涉案金额近6千万，庭审耗时两个多月"];
-        [_contents addObject:@"神操作！痔疮品牌“肛泰”借黑洞照片做营销 专家:侵权了"];
-        [_contents addObject:@"范冰冰名誉权纠纷案再度胜诉！获赔8万精神损失费"];
-        [_contents addObject:@"童模遭踢又曝新视频，靠网店店主联合抵制还不够"];
-        [_contents addObject:@"信阳8岁女童之死：生前曾说“我妈对我好呢,才打我两次”"];
-        [_contents addObject:@"幼儿园要求学生拍“我家的车” 网友:没个好车都不敢生孩子"];
-        [_contents addObject:@"最新进展！胜利与朴寒星老公被曝疑挪用公款高达350万元"];
+        [_contents addObject:@"神操作！痔疮品牌“肛泰”借黑洞照片做营销 专家:侵权了,又一起假冒iPhone诈骗案！涉案留学生恐面临20.."];
+        [_contents addObject:@"范冰冰名誉权纠纷案再度胜诉！获赔8万精神损失费,佩服这位设计师，出“超丑”美图手机，网友：改名叫“..\n2019年款iPhone将标配18W快充，后置升级.."];
+        [_contents addObject:@"童模遭踢又曝新视频，靠网店店主联合抵制还不够,我们所熟知的太阳，它会“爆炸”吗？"];
+        [_contents addObject:@"信阳8岁女童之死：生前曾说“我妈对我好呢,才打我两次”\n日本面板大衰落？鸿海和夏普10 代面板厂2018 .."];
+        [_contents addObject:@"幼儿园要求学生拍“我家的车” 网友:没个好车都不敢生孩子\n紫米Lighting快充数据线正式开售 iPhon.."];
+        [_contents addObject:@"最新进展！胜利与朴寒星老公被曝疑挪用公款高达350万元,荣耀合作Vivienne Tam推出特别版Magi.."];
         [_contents addObject:@"天坛奖评委首亮相,评委会主席:北京是中国电影业的核心城市"];
         [_contents addObject:@"不要太累了！广州出台促进消费新政，鼓励错峰休假和弹性作息……"];
         [_contents addObject:@"剧透！未来湾区内的轨道交通出行新动向，这场大会都讲到啦！"];

@@ -17,9 +17,10 @@
 		40CD0A9A225EC7AB0089EC2F /* NewsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 40CD0A99225EC7AB0089EC2F /* NewsCell.m */; };
 		40CD0A9D225ECDF60089EC2F /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40CD0A9C225ECDF60089EC2F /* UIView+Extension.m */; };
 		40CD0AA0225F56980089EC2F /* NewsActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 40CD0A9F225F56980089EC2F /* NewsActionView.m */; };
-		40CD0AB82260B6D00089EC2F /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 40CD0AB42260B6D00089EC2F /* UIScrollView+SVInfiniteScrolling.m */; };
-		40CD0AB92260B6D00089EC2F /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 40CD0AB52260B6D00089EC2F /* UIScrollView+SVPullToRefresh.m */; };
 		8DD84B73E6D4165FAB6CB543 /* libPods-MVC-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48CC69F2B3B3CDEDEC21CBAB /* libPods-MVC-Demo.a */; };
+		9323EC5E2260D33800247AD7 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 9323EC5A2260D33800247AD7 /* UIScrollView+SVInfiniteScrolling.m */; };
+		9323EC5F2260D33800247AD7 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 9323EC5B2260D33800247AD7 /* UIScrollView+SVPullToRefresh.m */; };
+		9323EC622260D4E300247AD7 /* FPSHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9323EC612260D4E300247AD7 /* FPSHandler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,12 +43,14 @@
 		40CD0A9C225ECDF60089EC2F /* UIView+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		40CD0A9E225F56980089EC2F /* NewsActionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewsActionView.h; sourceTree = "<group>"; };
 		40CD0A9F225F56980089EC2F /* NewsActionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewsActionView.m; sourceTree = "<group>"; };
-		40CD0AB32260B6D00089EC2F /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
-		40CD0AB42260B6D00089EC2F /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVInfiniteScrolling.m"; sourceTree = "<group>"; };
-		40CD0AB52260B6D00089EC2F /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
-		40CD0AB62260B6D00089EC2F /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVInfiniteScrolling.h"; sourceTree = "<group>"; };
-		40CD0AB72260B6D00089EC2F /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
 		48CC69F2B3B3CDEDEC21CBAB /* libPods-MVC-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MVC-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9323EC592260D33800247AD7 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
+		9323EC5A2260D33800247AD7 /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVInfiniteScrolling.m"; sourceTree = "<group>"; };
+		9323EC5B2260D33800247AD7 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
+		9323EC5C2260D33800247AD7 /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVInfiniteScrolling.h"; sourceTree = "<group>"; };
+		9323EC5D2260D33800247AD7 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
+		9323EC602260D4E300247AD7 /* FPSHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FPSHandler.h; sourceTree = "<group>"; };
+		9323EC612260D4E300247AD7 /* FPSHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FPSHandler.m; sourceTree = "<group>"; };
 		E673E76A1A7C91A295F32972 /* Pods-MVC-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVC-Demo.release.xcconfig"; path = "Target Support Files/Pods-MVC-Demo/Pods-MVC-Demo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,7 +87,7 @@
 		40CD0A7E225EC60A0089EC2F /* MVC-Demo */ = {
 			isa = PBXGroup;
 			children = (
-				40CD0AB22260B6D00089EC2F /* SVPullToRefresh */,
+				9323EC582260D33800247AD7 /* SVPullToRefresh */,
 				40CD0A9B225ECDF60089EC2F /* UIView+Extension.h */,
 				40CD0A9C225ECDF60089EC2F /* UIView+Extension.m */,
 				40CD0A7F225EC60A0089EC2F /* AppDelegate.h */,
@@ -97,6 +100,8 @@
 				40CD0A99225EC7AB0089EC2F /* NewsCell.m */,
 				40CD0A9E225F56980089EC2F /* NewsActionView.h */,
 				40CD0A9F225F56980089EC2F /* NewsActionView.m */,
+				9323EC602260D4E300247AD7 /* FPSHandler.h */,
+				9323EC612260D4E300247AD7 /* FPSHandler.m */,
 				40CD0A85225EC60A0089EC2F /* Main.storyboard */,
 				40CD0A88225EC60B0089EC2F /* Assets.xcassets */,
 				40CD0A8A225EC60B0089EC2F /* LaunchScreen.storyboard */,
@@ -106,17 +111,16 @@
 			path = "MVC-Demo";
 			sourceTree = "<group>";
 		};
-		40CD0AB22260B6D00089EC2F /* SVPullToRefresh */ = {
+		9323EC582260D33800247AD7 /* SVPullToRefresh */ = {
 			isa = PBXGroup;
 			children = (
-				40CD0AB32260B6D00089EC2F /* SVPullToRefresh.h */,
-				40CD0AB42260B6D00089EC2F /* UIScrollView+SVInfiniteScrolling.m */,
-				40CD0AB52260B6D00089EC2F /* UIScrollView+SVPullToRefresh.m */,
-				40CD0AB62260B6D00089EC2F /* UIScrollView+SVInfiniteScrolling.h */,
-				40CD0AB72260B6D00089EC2F /* UIScrollView+SVPullToRefresh.h */,
+				9323EC592260D33800247AD7 /* SVPullToRefresh.h */,
+				9323EC5A2260D33800247AD7 /* UIScrollView+SVInfiniteScrolling.m */,
+				9323EC5B2260D33800247AD7 /* UIScrollView+SVPullToRefresh.m */,
+				9323EC5C2260D33800247AD7 /* UIScrollView+SVInfiniteScrolling.h */,
+				9323EC5D2260D33800247AD7 /* UIScrollView+SVPullToRefresh.h */,
 			);
-			name = SVPullToRefresh;
-			path = "../../../../../Downloads/SVPullToRefresh-master/SVPullToRefresh";
+			path = SVPullToRefresh;
 			sourceTree = "<group>";
 		};
 		A6FD91431A5BF3A8121803CC /* Frameworks */ = {
@@ -236,8 +240,9 @@
 				40CD0A9D225ECDF60089EC2F /* UIView+Extension.m in Sources */,
 				40CD0A97225EC6CD0089EC2F /* NewsModel.m in Sources */,
 				40CD0A84225EC60A0089EC2F /* ViewController.m in Sources */,
-				40CD0AB82260B6D00089EC2F /* UIScrollView+SVInfiniteScrolling.m in Sources */,
-				40CD0AB92260B6D00089EC2F /* UIScrollView+SVPullToRefresh.m in Sources */,
+				9323EC5E2260D33800247AD7 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
+				9323EC5F2260D33800247AD7 /* UIScrollView+SVPullToRefresh.m in Sources */,
+				9323EC622260D4E300247AD7 /* FPSHandler.m in Sources */,
 				40CD0A8F225EC60B0089EC2F /* main.m in Sources */,
 				40CD0A9A225EC7AB0089EC2F /* NewsCell.m in Sources */,
 				40CD0A81225EC60A0089EC2F /* AppDelegate.m in Sources */,
