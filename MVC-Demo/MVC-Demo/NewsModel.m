@@ -8,6 +8,37 @@
 
 #import "NewsModel.h"
 
+NSString *API_GetGaoShiList = @"http://rap2api.taobao.org/app/mock/163155/gaoshilist"; // 告示列表
+NSString *API_GetUserInfo = @"http://rap2api.taobao.org/app/mock/163155/userinfo";   // 用户信息
+
 @implementation NewsModel
+
+/// 添加关注
+- (void)addAttention:(void(^)(NSDictionary *json))callback {
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionTask *task = [session dataTaskWithURL:[NSURL URLWithString:API_GetUserInfo] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (callback) {
+                callback(nil);
+            }
+        });
+    }];
+    [task resume];
+}
+
+/// 添加点赞
+- (void)addLike:(void(^)(NSDictionary *json))callback {
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionTask *task = [session dataTaskWithURL:[NSURL URLWithString:API_GetGaoShiList] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (callback) {
+                callback(nil);
+            }
+        });
+    }];
+    [task resume];
+}
 
 @end

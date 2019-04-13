@@ -115,12 +115,32 @@ static NSString *cellId = @"NewsCellId";
         if (imgs.count > 0) {
             model.imgs = imgs.copy;
         }
+        model.newsId = [NSString stringWithFormat:@"%@%d",[self getNowTimeTimestamp2],i];
+        model.attention = arc4random_uniform(10) % 3 == 0;
+        model.like = arc4random_uniform(10) % 2 == 0;
         model.shareNum = arc4random_uniform(100);
         model.discussNum = arc4random_uniform(100);
         model.likeNum = arc4random_uniform(100);
         [models addObject:model];
     }
     return models.copy;
+}
+
+#pragma mark - updateData
+
+- (void)updateNewsView:(NewsModel *)newsModel {
+    __block NSUInteger index = NSNotFound;
+    [self.dataSource enumerateObjectsUsingBlock:^(NewsModel *obj, NSUInteger idx, BOOL *stop) {
+        if ([newsModel.newsId isEqualToString:obj.newsId]) {
+            index = idx;
+            *stop = YES;
+        }
+    }];
+    if (index == NSNotFound) {
+        return;
+    }
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 #pragma mark - UITableViewDataSource
@@ -152,7 +172,12 @@ static NSString *cellId = @"NewsCellId";
 }
 
 - (void)didTapNewsCellAttention:(NewsModel *)newsModel {
-    
+    __weak typeof(NewsModel *) weakNewsModel = newsModel;
+    [newsModel addAttention:^(NSDictionary *json) {
+        weakNewsModel.attention = YES;
+        [AlertUtils message:[NSString stringWithFormat:@"关注 %@\n%@ 成功",weakNewsModel.title,weakNewsModel.subTitle]];
+        [self updateNewsView:weakNewsModel];
+    }];
 }
 
 - (void)didTapNewsCellShare:(NewsModel *)newsModel {
@@ -164,7 +189,16 @@ static NSString *cellId = @"NewsCellId";
 }
 
 - (void)didTapNewsCellLike:(NewsModel *)newsModel {
-    
+    __weak typeof(NewsModel *) weakNewsModel = newsModel;
+    [newsModel addLike:^(NSDictionary *json) {
+        weakNewsModel.like = !weakNewsModel.like;
+        if (weakNewsModel.like) {
+            weakNewsModel.likeNum += 1;
+        } else {
+            weakNewsModel.likeNum -= 1;
+        }
+        [self updateNewsView:weakNewsModel];
+    }];
 }
 
 #pragma mark - alert
@@ -180,6 +214,16 @@ static NSString *cellId = @"NewsCellId";
     [alertVC addAction:okAction];
     [alertVC addAction:cancelAction];
     [self presentViewController:alertVC animated:YES completion:nil];
+}
+
+#pragma mark - private
+
+// 获取时间戳 - new id
+- (NSString *)getNowTimeTimestamp2{
+    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSTimeInterval a=[dat timeIntervalSince1970];
+    NSString*timeString = [NSString stringWithFormat:@"%0.f", a];//转为字符型
+    return timeString;
 }
 
 #pragma mark - lazy

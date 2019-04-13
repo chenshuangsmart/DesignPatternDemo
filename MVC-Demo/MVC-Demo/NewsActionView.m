@@ -67,4 +67,14 @@
     }];
 }
 
+- (void)updateImgName:(NSString *)imgName {
+    _imgName = imgName;
+    self.imgView.image = [UIImage imageNamed:_imgName];
+    
+    [self.imgView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.mas_centerY);
+        make.trailing.equalTo(self.mas_centerX).offset(-2);
+    }];
+}
+
 @end

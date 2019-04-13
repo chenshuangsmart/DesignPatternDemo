@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateTitle:(NSString *)tilte;
 
+- (void)updateImgName:(NSString *)imgName;
+
 @end
 
 NS_ASSUME_NONNULL_END

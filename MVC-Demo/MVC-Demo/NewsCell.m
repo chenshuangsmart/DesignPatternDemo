@@ -83,12 +83,13 @@
     }];
     
     [self.deleteImgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(self.deleteImgView.size);
         make.trailing.equalTo(self.contentView.mas_trailing).offset(-10);
         make.centerY.equalTo(self.iconImgView.mas_centerY);
     }];
     
     [self.attentionLbe mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.trailing.equalTo(self.deleteImgView.mas_leading).offset(-20);
+        make.trailing.equalTo(self.contentView).offset(-40);
         make.centerY.equalTo(self.iconImgView.mas_centerY);
     }];
     
@@ -147,6 +148,20 @@
     self.contentLbe.text = model.content;
     [self.contentLbe sizeToFit];
     
+    if (model.isAttention) {
+        self.attentionLbe.text = @"已关注";
+        self.attentionLbe.textColor = [UIColor grayColor];
+        self.attentionLbe.userInteractionEnabled = NO;
+    } else {
+        self.attentionLbe.text = @"关注";
+        self.attentionLbe.textColor = [UIColor redColor];
+        self.attentionLbe.userInteractionEnabled = YES;
+    }
+    [self.attentionLbe sizeToFit];
+    [self.contentLbe mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(self.contentView).offset(-40);
+    }];
+    
     [self.imgListView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     float imgListViewHeight = 0;
     float discussActionViewPosY = 0;
@@ -183,6 +198,12 @@
     [self.likeActionView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.discussActionView.mas_top);
     }];
+    
+    if (model.isLike) {
+        [self.likeActionView updateImgName:@"like_red"];
+    } else {
+        [self.likeActionView updateImgName:@"like"];
+    }
     
     [self.discussActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.discussNum]];
     [self.shareActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)model.shareNum]];
