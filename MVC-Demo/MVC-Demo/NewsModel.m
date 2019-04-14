@@ -32,10 +32,20 @@ NSString *API_GetUserInfo = @"http://rap2api.taobao.org/app/mock/163155/userinfo
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
     NSURLSessionTask *task = [session dataTaskWithURL:[NSURL URLWithString:API_GetGaoShiList] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (callback) {
-                callback(nil);
-            }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error == nil) {
+                    self.like = !self.like;
+                    if (self.like) {
+                        self.likeNum += 1;
+                    } else {
+                        self.likeNum -= 1;
+                    }
+                }
+                if (callback) {
+                    callback(nil);
+                }
+            });
         });
     }];
     [task resume];

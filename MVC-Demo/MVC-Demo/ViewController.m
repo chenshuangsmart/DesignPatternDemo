@@ -120,7 +120,7 @@ static NSString *cellId = @"NewsCellId";
         model.like = arc4random_uniform(10) % 2 == 0;
         model.shareNum = arc4random_uniform(100);
         model.discussNum = arc4random_uniform(100);
-        model.likeNum = arc4random_uniform(100);
+        model.likeNum = arc4random_uniform(100) + 1;
         [models addObject:model];
     }
     return models.copy;
@@ -189,16 +189,50 @@ static NSString *cellId = @"NewsCellId";
 }
 
 - (void)didTapNewsCellLike:(NewsModel *)newsModel {
+    // 标准的MVC写法
     __weak typeof(NewsModel *) weakNewsModel = newsModel;
     [newsModel addLike:^(NSDictionary *json) {
-        weakNewsModel.like = !weakNewsModel.like;
-        if (weakNewsModel.like) {
-            weakNewsModel.likeNum += 1;
-        } else {
-            weakNewsModel.likeNum -= 1;
-        }
+        // 更新对应的视图
         [self updateNewsView:weakNewsModel];
     }];
+    
+    // 非标准的MVC写法
+//    [self postLikeNetwork:newsModel];
+}
+
+#pragma mark - like network + data dealwith
+
+- (void)postLikeNetwork:(NewsModel *)newsModel {
+    NSString *api = @"http://rap2api.taobao.org/app/mock/163155/gaoshilist"; // 告示
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionTask *task = [session dataTaskWithURL:[NSURL URLWithString:api] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error == nil) {
+                [self dealwithLikeData:newsModel.newsId];
+            }
+        });
+    }];
+    [task resume];
+}
+
+- (void)dealwithLikeData:(NSString *)newsId {
+    __block NewsModel *newsModel;
+    [self.dataSource enumerateObjectsUsingBlock:^(NewsModel *obj, NSUInteger idx, BOOL *stop) {
+        if ([obj.newsId isEqualToString:newsId]) {
+            newsModel = obj;
+            *stop = YES;
+        }
+    }];
+    if (newsModel) {
+        newsModel.like = !newsModel.like;
+        if (newsModel.like) {
+            newsModel.likeNum += 1;
+        } else {
+            newsModel.likeNum -= 1;
+        }
+        [self updateNewsView:newsModel];
+    }
 }
 
 #pragma mark - alert

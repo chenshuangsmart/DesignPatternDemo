@@ -13,6 +13,8 @@
 #import "UIImageView+WebCache.h"
 #import "Masonry/Masonry.h"
 
+static NSString *kNotifyModelUpdate = @"kNotifyModelUpdate";
+
 @interface NewsCell()
 /** icon */
 @property(nonatomic, strong)UIImageView *iconImgView;
@@ -47,6 +49,7 @@
     if (self) {
         self.contentView.backgroundColor = [UIColor whiteColor];
         [self drawUI];
+//        [self addNotify];
     }
     return self;
 }
@@ -241,10 +244,66 @@
     }
 }
 
+// 用户点击了点赞按钮
 - (void)tapLike {
+    /**
+     标准MVC写法 - 用户点击事件外传
+     */
     if ([self.delegate respondsToSelector:@selector(didTapNewsCellLike:)]) {
         [self.delegate didTapNewsCellLike:self.model];
     }
+    
+    /**
+     * view上面的用户行为事件如何处理？
+     2.直接发起网络请求并处理回调事件 - 非标准的MVC写法,此种写法有问题
+     */
+//    NSLog(@"old model %p",self.model);
+//    __weak typeof(self) weakSelf = self;
+//    [self.model addLike:^(NSDictionary *json) {
+//        weakSelf.model.like = !weakSelf.model.isLike;
+//        NSLog(@"new model %p",weakSelf.model);
+//        if (weakSelf.model.isLike) {
+//            [weakSelf.likeActionView updateImgName:@"like_red"];
+//            weakSelf.model.likeNum++;
+//        } else {
+//            [weakSelf.likeActionView updateImgName:@"like"];
+//            weakSelf.model.likeNum--;
+//        }
+//        [weakSelf.likeActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)weakSelf.model.likeNum]];
+//    }];
+    
+    /**
+     * 数据模型更新了后如何处理？
+     * 直接发通知,然后视图监听通知并刷新视图
+     */
+//    __weak typeof(self) weakSelf = self;
+//    [self.model addLike:^(NSDictionary *json) {
+//        // 发通知
+//        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyModelUpdate object:weakSelf.model];
+//    }];
+}
+
+#pragma mark - notify
+
+- (void)addNotify {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNotifyModelUpdate:) name:kNotifyModelUpdate object:nil];
+}
+
+- (void)onNotifyModelUpdate:(NSNotification *)notify {
+    NewsModel *model = (NewsModel *)notify.object;
+    if (model == nil) {
+        return;
+    }
+    if (![self.model.newsId isEqualToString:model.newsId]) {
+        return;
+    }
+    // 更新视图操作
+    if (self.model.isLike) {
+        [self.likeActionView updateImgName:@"like_red"];
+    } else {
+        [self.likeActionView updateImgName:@"like"];
+    }
+    [self.likeActionView updateTitle:[NSString stringWithFormat:@"%lu",(unsigned long)self.model.likeNum]];
 }
 
 #pragma mark - private
